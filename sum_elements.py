@@ -1,37 +1,79 @@
-#A poorly written example of a program in Python. It prompts the user for the number of elements to sum, takes those integers as input, and handles some basic error cases
+"""Program to calculate sum of user-provided integers.
 
-MAX = 100
+This module provides functionality to accept a series of integers from the user
+and calculate their sum while handling various error cases.
+"""
 
-def calculate_sum(arr):
-   result = 0
-   for num in arr:
-      result += num
-   return result
+from typing import List
 
-def main():
-   try:
-      n = int(input("Enter the number of elements (1-100): "))
-      if not 1 <= n <= MAX:
-            print("Invalid input. Please provide a digit ranging from 1 to 100.")
-            exit(1)
+# Constants
+MAX_ELEMENTS = 100
+MIN_ELEMENTS = 1
 
-      arr = []
+def validate_input_count(count: int) -> bool:
+    """Validate if the input count is within acceptable range.
 
-      print(f"Enter {n} integers:")
-      for _ in range(n):
-            try:
-               arr.append(int(input()))
-            except ValueError:
-               print("Invalid input. Please enter valid integers.")
-               exit(1)
+    Args:
+        count (int): Number of elements to be summed
 
-      total = calculate_sum(arr)
+    Returns:
+        bool: True if count is valid, False otherwise
+    """
+    return MIN_ELEMENTS <= count <= MAX_ELEMENTS
 
-      print("Sum of the numbers:", total)
+def calculate_sum(numbers: List[int]) -> int:
+    """Calculate the sum of all numbers in the list.
 
-   except KeyboardInterrupt:
-      print("\nProgram terminated by user.")
-      exit(1)
+    Args:
+        numbers (List[int]): List of integers to sum
+
+    Returns:
+        int: Sum of all numbers
+    """
+    return sum(numbers)
+
+def get_user_numbers(count: int) -> List[int]:
+    """Get specified number of integers from user input.
+
+    Args:
+        count (int): Number of integers to collect
+
+    Returns:
+        List[int]: List of collected integers
+
+    Raises:
+        ValueError: If user enters non-integer input
+    """
+    print(f"\nEnter {count} integers (one per line):")
+    return [int(input(f"Number {i+1}: ")) for i in range(count)]
+
+def main() -> None:
+    """Main function to run the program."""
+    try:
+        # Get number of elements
+        input_str = input(f"Enter the number of elements ({MIN_ELEMENTS}-{MAX_ELEMENTS}): ")
+        count = int(input_str)
+
+        if not validate_input_count(count):
+            print(f"Error: Please enter a number between {MIN_ELEMENTS} and {MAX_ELEMENTS}.")
+            return
+
+        # Get numbers and calculate sum
+        try:
+            numbers = get_user_numbers(count)
+            total = calculate_sum(numbers)
+            print(f"\nSum of the numbers: {total}")
+
+        except ValueError:
+            print("Error: Please enter valid integers only.")
+            return
+
+    except ValueError:
+        print("Error: Please enter a valid integer for the count.")
+    except KeyboardInterrupt:
+        print("\nProgram terminated by user.")
+    except Exception as e:
+        print(f"An unexpected error occurred: {str(e)}")
 
 if __name__ == "__main__":
-   main()
+    main()
